@@ -1,6 +1,6 @@
 # Multilingual Toxic Comment Detector for English, Malay and Manglish
 
-A multilingual toxic comment classifier for English, Malay, and code-mixed English & Malay text using XLM-RoBERTa. The model is fine-tuned on monolingual English and Malay data and evaluated on code-mixed Manglish to test cross-lingual generalization.
+A multilingual toxic comment classifier project for English, Malay, and code-mixed English & Malay text using XLM-RoBERTa. The model is fine-tuned on monolingual English and Malay data and evaluated on code-mixed Manglish to test cross-lingual generalization.
 
 ---
 
