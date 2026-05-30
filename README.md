@@ -1,6 +1,6 @@
 # Toxic Comment Detector for English, Malay and Manglish
 
-A multilingual toxic comment classifier for English, Malay, and code-mixed English & Malay (Manglish) text using XLM-RoBERTa. The model is fine-tuned on monolingual English and Malay data combined with a small amount of code-mixed data, and evaluated separately on each language to measure cross-lingual performance.
+A multilingual toxic comment classifier for English, Malay, and code-mixed English & Malay (Manglish) text using XLM-RoBERTa. The model is fine-tuned on monolingual English and Malay data, and the project compares a **zero-shot** configuration (monolingual training only) against a **few-shot** configuration (a small amount of code-mixed data folded into training) to measure the effect of code-mixed fine-tuning on Manglish detection.
 
 ---
 
@@ -19,14 +19,12 @@ This project aims to build an intelligent text classification system that detect
 
 The system uses **XLM-RoBERTa**, a multilingual transformer model pretrained on 100 languages including English and Malay. Because XLM-RoBERTa learns a shared multilingual representation space during pretraining, it generalizes across languages and handles code-mixed text well.
 
-**Training data:** Monolingual English and Malay (from the Mendeley bilingual hate speech dataset), plus a small portion of the custom code-mixed set folded in for **few-shot fine-tuning**.
+To measure how much code-mixed training data helps, two models are trained and compared on the **same** held-out test sets:
 
-**Test data:** Three separate test sets evaluated independently:
-- English test set
-- Malay test set
-- Code-mixed Manglish test set (held-out portion of the custom set, never seen during training)
+- **Zero-shot:** fine-tuned on monolingual English + Malay only; Manglish is never seen during training.
+- **Few-shot:** fine-tuned on English + Malay plus a small portion of code-mixed data folded into training and validation.
 
-This setup measures both in-distribution performance (English, Malay) and generalization to code-mixed input (Manglish). A small amount of code-mixed training data is used to make the model practically relevant to real Malaysian social media phrasing, while a disjoint held-out portion of the same set provides a fair test measure.
+Both are evaluated on an identical held-out code-mixed test set, so the difference in Manglish performance isolates the effect of the code-mixed training data.
 
 ---
 
@@ -36,7 +34,7 @@ This setup measures both in-distribution performance (English, Malay) and genera
 |---|---|
 | Model | XLM-RoBERTa-base + custom classification head |
 | Framework | PyTorch + HuggingFace Transformers |
-| Training | Custom PyTorch training loop (AdamW, linear warmup, early stopping) |
+| Training | Custom PyTorch training loop (AdamW, linear warmup, mixed precision, early stopping) |
 | Compute | Google Colab (GPU) |
 | Model Hosting | Hugging Face Hub |
 | Explainability | Integrated Gradients (Captum) |
@@ -60,7 +58,7 @@ Contains 26,985 bilingual posts curated from five original sources:
 - Supervised-Twitter (Malay)
 
 ### Custom Code-Mixed Set
-A manually curated set of 500 code-mixed Malay-English (Manglish) sentences collected from social media such as Reddit Malaysia, TikTok, and Facebook, and labelled by the team (274 toxic / 226 non-toxic). It is split into a training portion (folded into training/validation) and a disjoint held-out test portion used only for evaluation.
+A manually curated set of 500 code-mixed Malay-English (Manglish) sentences collected from social media such as Reddit Malaysia, TikTok, and Facebook, and labelled by the team (274 toxic / 226 non-toxic). It is split 300 train / 75 validation / 125 held-out test. The training and validation portions are used only in the few-shot configuration; the 125-sentence held-out test is identical across both configurations.
 
 ---
 
@@ -84,27 +82,39 @@ malay-english-toxic-detector/
 │   ├── raw/
 │   │   ├── bilingual_hatespeech_ms_en_v2.csv      ← original Mendeley data
 │   │   └── Code-Mixed Test Set ... .xlsx          ← custom 500-row Manglish set
-│   └── processed/
-│       ├── train.csv                              ← combined en+ms+codemixed training data
-│       ├── val.csv                                ← validation data (incl. codemixed)
-│       ├── test.csv                               ← combined test data
-│       ├── test_english.csv                       ← English-only test split
-│       ├── test_malay.csv                         ← Malay-only test split
-│       └── test_codemixed.csv                     ← held-out Manglish test set
+│   ├── processed/                                 ← FEW-SHOT splits (code-mixed folded in)
+│   │   ├── train.csv
+│   │   ├── val.csv
+│   │   ├── test.csv
+│   │   ├── test_english.csv
+│   │   ├── test_malay.csv
+│   │   └── test_codemixed.csv
+│   └── processed_zeroshot/                         ← ZERO-SHOT splits (monolingual train/val)
+│       ├── train.csv
+│       ├── val.csv
+│       ├── test.csv
+│       ├── test_english.csv
+│       ├── test_malay.csv
+│       └── test_codemixed.csv                      ← identical held-out test as few-shot
 │
 └── reports/
-    ├── figures/                                   ← confusion matrices, plots
-    ├── metrics.csv                                ← per-language evaluation results
-    └── error_analysis.xlsx                        ← per-sample error analysis
+    ├── fewshot/                                    ← few-shot results
+    │   ├── metrics_fewshot.csv
+    │   ├── cm_combined.png / cm_english.png / cm_malay.png / cm_manglish.png
+    │   └── error_analysis_fewshot.xlsx
+    └── zeroshot/                                   ← zero-shot results
+        ├── metrics_zeroshot.csv
+        ├── cm_combined.png / cm_english.png / cm_malay.png / cm_manglish.png
+        └── error_analysis_zeroshot.xlsx
 ```
 
-> **Note:** The fine-tuned model weights are hosted on the [Hugging Face Hub](https://huggingface.co/RextonRZ/malay-english-toxic-detector) rather than committed to this repository, as the checkpoint is ~1 GB.
+> **Note:** The fine-tuned model weights are hosted on the [Hugging Face Hub](https://huggingface.co/RextonRZ/malay-english-toxic-detector) rather than committed to this repository, as each checkpoint is ~1 GB. Two checkpoints are stored: `best_model.pt` (few-shot, used by the deployed demo) and `best_model_zeroshot.pt` (zero-shot, for comparison).
 
 ---
 
 ## Pipeline Overview
 
-The notebook covers the full pipeline in five parts:
+The notebook covers the full pipeline in five parts. An `EXPERIMENT` flag (`"fewshot"` or `"zeroshot"`) selects which dataset version to train and evaluate, so the same pipeline runs both configurations.
 
 **Part A: Dataset Preparation**
 - Data loading from the Mendeley dataset
@@ -113,14 +123,14 @@ The notebook covers the full pipeline in five parts:
 - Text cleaning (URLs, mentions, anonymization tags removed; emoticons converted to words)
 - Dataset standardization to unified `text, label, language` format
 - Stratified 70/15/15 train/validation/test split
-- Integration of the custom code-mixed set (split 300 train / 75 val / 125 held-out test)
+- Code-mixed integration: saves both a few-shot version (`data/processed/`) and a zero-shot version (`data/processed_zeroshot/`)
 
 **Part B: Tokenization & Encoding**
 - XLM-RoBERTa subword tokenizer setup
 - Token length analysis and configuration (max_length=128)
 
 **Part C: Model Training**
-- Fine-tune XLM-RoBERTa-base + custom head on combined English + Malay + code-mixed data
+- Fine-tune XLM-RoBERTa-base + custom head on the selected dataset version
 - Custom training loop with AdamW, linear warmup, mixed precision, and early stopping
 - Best checkpoint (highest validation F1) uploaded to the Hugging Face Hub
 
@@ -129,9 +139,11 @@ The notebook covers the full pipeline in five parts:
 - Per-language metrics (Accuracy, Precision, Recall, F1, MCC, AUC-ROC)
 - Confusion matrices for English, Malay, and code-mixed test sets
 - Per-sample error analysis exported to Excel
+- Results saved per experiment under `reports/<experiment>/`
 
 **Part E: Deployment**
 - Gradio web interface (`src/app.py`) with live classification, confidence scores, and Integrated Gradients word-level attribution
+- Always loads the few-shot model (`best_model.pt`) as the deployed version
 
 ---
 
@@ -154,10 +166,9 @@ pip install -r requirements.txt
 
 Open `notebooks/malay_english_toxic_detector.ipynb` in Google Colab (recommended for GPU access) or Jupyter.
 
-The notebook runs the full pipeline end-to-end:
-- Data preparation only needs to run **once** (the processed splits are already in `data/processed/`)
-- Tokenization, Training, and Evaluation load directly from the processed files
-- Evaluation loads the fine-tuned weights from the Hugging Face Hub, so it can run without retraining
+- Data preparation in Part A only needs to run once; the processed splits for both configurations are already in `data/processed/` and `data/processed_zeroshot/`.
+- Set the `EXPERIMENT` flag to `"fewshot"` or `"zeroshot"` to choose which configuration to train and evaluate.
+- Evaluation loads the fine-tuned weights from the Hugging Face Hub, so it can run without retraining.
 
 ### 4. Launch the Gradio demo
 
@@ -165,13 +176,13 @@ The notebook runs the full pipeline end-to-end:
 python src/app.py
 ```
 
-This loads the model from the Hugging Face Hub and opens a web interface where you can input comments and receive toxic/non-toxic predictions with confidence scores and word-level attribution.
+This loads the few-shot model from the Hugging Face Hub and opens a web interface where you can input comments and receive toxic/non-toxic predictions with confidence scores and word-level attribution.
 
 ---
 
 ## Evaluation Methodology
 
-The trained model is evaluated on separate test sets to measure performance across input types:
+Each trained model is evaluated on separate test sets to measure performance across input types:
 
 | Test Set | Language | Source | Purpose |
 |---|---|---|---|
@@ -181,13 +192,13 @@ The trained model is evaluated on separate test sets to measure performance acro
 
 Reported metrics: Accuracy, Precision, Recall, F1, MCC, AUC-ROC (per-language).
 
-The gap between the English/Malay F1 and the code-mixed F1 indicates how much performance changes on mixed-language input. Comparing the model with and without code-mixed training data shows the effect of few-shot fine-tuning on Manglish performance.
+The gap between the English/Malay F1 and the code-mixed F1 indicates how much performance changes on mixed-language input. Comparing the zero-shot and few-shot models on the identical code-mixed test set shows the effect of code-mixed fine-tuning on Manglish detection.
 
 ---
 
 ## Limitations & Future Work
 
-- The custom code-mixed set is relatively small (500 sentences) and manually curated by the team, with only ~300 sentences available for training and 125 for testing.
+- The custom code-mixed set is relatively small (500 sentences), with only ~300 sentences available for training and 125 for testing.
 - On code-mixed input the model shows high precision but lower recall, meaning it under-detects some toxic Manglish content — reflecting the limited code-mixed training data.
 - Future work could incorporate a larger code-mixed training set (manual annotation or synthetic generation) to further improve Manglish recall.
 
