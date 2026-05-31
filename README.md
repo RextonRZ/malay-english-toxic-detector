@@ -1,10 +1,21 @@
 # Toxic Comment Detector for English, Malay and Manglish
 
+![Python](https://img.shields.io/badge/Python-3.10-3776AB?logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)
+![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Transformers-FFD21E)
+![Gradio](https://img.shields.io/badge/Gradio-FF7C00?logo=gradio&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
+[![Live Demo](https://img.shields.io/badge/%F0%9F%A4%97%20Live%20Demo-Hugging%20Face%20Spaces-yellow)](https://huggingface.co/spaces/RextonRZ/toxic-comment-detector-demo)
+
+
 A multilingual toxic comment classifier for English, Malay, and code-mixed English & Malay (Manglish) text using XLM-RoBERTa. The model is fine-tuned on monolingual English and Malay data, and the project compares a **zero-shot** configuration (monolingual training only) against a **few-shot** configuration (a small amount of code-mixed data folded into training) to measure the effect of code-mixed fine-tuning on Manglish detection.
 
 **🔗 Live demo:** https://huggingface.co/spaces/RextonRZ/toxic-comment-detector-demo
 
 > **Key finding:** XLM-RoBERTa generalizes to Manglish reasonably even zero-shot, but adding only ~300 code-mixed training examples nearly **doubled** code-mixed F1 (0.42 → 0.71) and recall (0.30 → 0.61) — with no loss on English or Malay.
+
+![Demo screenshot](reports/figures/demo.png)
+*The Gradio interface: a comment is classified with a confidence score, probability breakdown, and Integrated Gradients word-level highlights.*
 
 ---
 
@@ -241,6 +252,20 @@ The gap between the English/Malay F1 and the code-mixed F1 indicates how much pe
 - The custom code-mixed set is relatively small (500 sentences), with only ~300 sentences available for training and 125 for testing.
 - On code-mixed input the model shows high precision but lower recall, meaning it under-detects some toxic Manglish content — reflecting the limited code-mixed training data.
 - Future work could incorporate a larger code-mixed training set (manual annotation or synthetic generation) to further improve Manglish recall.
+
+---
+
+## Authors
+
+**WID3011 Natural Language Processing — Group 8, Universiti Malaya**
+
+| Name | Matric No. |
+|---|---|
+| Ooi Rui Zhe | 23004947 |
+| Vanness Liu Chuen Wei | 23005021 |
+| Khor Rui Zhe | 23004890 |
+| Ong Zhao Qian | 23004986 |
+| Matthewdass A/L Sandanadass | 23004906 |
 
 ---
 
