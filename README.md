@@ -254,17 +254,10 @@ The gap between the English/Malay F1 and the code-mixed F1 indicates how much pe
 
 ---
 
-## Authors
+## Author
+WID3011 Group 8, Universiti Malaya
 
-**WID3011 Natural Language Processing — Group 8, Universiti Malaya**
-
-| Name | Matric No. |
-|---|---|
-| Ooi Rui Zhe | 23004947 |
-| Vanness Liu Chuen Wei | 23005021 |
-| Khor Rui Zhe | 23004890 |
-| Ong Zhao Qian | 23004986 |
-| Matthewdass A/L Sandanadass | 23004906 |
+Repository & implementation by [Ooi Rui Zhe](https://github.com/RextonRZ); dataset curation and project work by the full team: Ooi Rui Zhe, Vanness Liu Chuen Wei, Khor Rui Zhe, Ong Zhao Qian, Matthewdass A/L Sandanadass.
 
 ---
 
