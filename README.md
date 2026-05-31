@@ -4,7 +4,6 @@
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)
 ![HuggingFace](https://img.shields.io/badge/%F0%9F%A4%97%20Transformers-FFD21E)
 ![Gradio](https://img.shields.io/badge/Gradio-FF7C00?logo=gradio&logoColor=white)
-![License: MIT](https://img.shields.io/badge/License-MIT-green)
 [![Live Demo](https://img.shields.io/badge/%F0%9F%A4%97%20Live%20Demo-Hugging%20Face%20Spaces-yellow)](https://huggingface.co/spaces/RextonRZ/toxic-comment-detector-demo)
 
 
