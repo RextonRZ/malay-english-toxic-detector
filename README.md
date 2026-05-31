@@ -257,7 +257,8 @@ The gap between the English/Malay F1 and the code-mixed F1 indicates how much pe
 ## Author
 WID3011 Group 8, Universiti Malaya
 
-Repository & implementation by [Ooi Rui Zhe](https://github.com/RextonRZ); dataset curation and project work by the full team: Ooi Rui Zhe, Vanness Liu Chuen Wei, Khor Rui Zhe, Ong Zhao Qian, Matthewdass A/L Sandanadass.
+Repository & implementation by [Ooi Rui Zhe](https://github.com/RextonRZ);   
+dataset curation and project work by the full team: Ooi Rui Zhe, Vanness Liu Chuen Wei, Khor Rui Zhe, Ong Zhao Qian, Matthewdass A/L Sandanadass.
 
 ---
 
