@@ -14,7 +14,7 @@ A multilingual toxic comment classifier for English, Malay, and code-mixed Engli
 
 > **Key finding:** XLM-RoBERTa generalizes to Manglish reasonably even zero-shot, but adding only ~300 code-mixed training examples nearly **doubled** code-mixed F1 (0.42 → 0.71) and recall (0.30 → 0.61) — with no loss on English or Malay.
 
-![Demo screenshot](reports/figures/demo.png)
+![Demo screenshot](reports/figure/demo.png)
 *The Gradio interface: a comment is classified with a confidence score, probability breakdown, and Integrated Gradients word-level highlights.*
 
 ---
