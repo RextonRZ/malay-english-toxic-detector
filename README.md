@@ -2,6 +2,8 @@
 
 A multilingual toxic comment classifier for English, Malay, and code-mixed English & Malay (Manglish) text using XLM-RoBERTa. The model is fine-tuned on monolingual English and Malay data, and the project compares a **zero-shot** configuration (monolingual training only) against a **few-shot** configuration (a small amount of code-mixed data folded into training) to measure the effect of code-mixed fine-tuning on Manglish detection.
 
+**🔗 Live demo:** https://huggingface.co/spaces/RextonRZ/toxic-comment-detector-demo
+
 ---
 
 ## Problem Statement
@@ -37,6 +39,7 @@ Both are evaluated on an identical held-out code-mixed test set, so the differen
 | Training | Custom PyTorch training loop (AdamW, linear warmup, mixed precision, early stopping) |
 | Compute | Google Colab (GPU) |
 | Model Hosting | Hugging Face Hub |
+| Deployment | Hugging Face Spaces (Gradio) |
 | Explainability | Integrated Gradients (Captum) |
 | Frontend | Gradio |
 | Data Source | Mendeley bilingual Malay-English hate speech dataset + custom code-mixed set |
@@ -142,27 +145,32 @@ The notebook covers the full pipeline in five parts. An `EXPERIMENT` flag (`"few
 - Results saved per experiment under `reports/<experiment>/`
 
 **Part E: Deployment**
-- Gradio web interface (`src/app.py`) with live classification, confidence scores, and Integrated Gradients word-level attribution
+- Gradio web interface deployed on Hugging Face Spaces
+- Live classification with confidence scores and Integrated Gradients word-level attribution
 - Always loads the few-shot model (`best_model.pt`) as the deployed version
 
 ---
 
 ## How to Run
 
-### 1. Clone the repository
+### 1. Try the live demo (no setup)
+
+Open the hosted Space directly: **https://huggingface.co/spaces/RextonRZ/toxic-comment-detector-demo**
+
+### 2. Clone the repository
 
 ```bash
 git clone https://github.com/RextonRZ/malay-english-toxic-detector.git
 cd malay-english-toxic-detector
 ```
 
-### 2. Install dependencies
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the pipeline notebook
+### 4. Run the pipeline notebook
 
 Open `notebooks/malay_english_toxic_detector.ipynb` in Google Colab (recommended for GPU access) or Jupyter.
 
@@ -170,13 +178,13 @@ Open `notebooks/malay_english_toxic_detector.ipynb` in Google Colab (recommended
 - Set the `EXPERIMENT` flag to `"fewshot"` or `"zeroshot"` to choose which configuration to train and evaluate.
 - Evaluation loads the fine-tuned weights from the Hugging Face Hub, so it can run without retraining.
 
-### 4. Launch the Gradio demo
+### 5. Run the demo locally (optional)
 
 ```bash
 python src/app.py
 ```
 
-This loads the few-shot model from the Hugging Face Hub and opens a web interface where you can input comments and receive toxic/non-toxic predictions with confidence scores and word-level attribution.
+This loads the few-shot model from the Hugging Face Hub and opens a local web interface with the same functionality as the hosted Space.
 
 ---
 
