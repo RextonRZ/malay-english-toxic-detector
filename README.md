@@ -213,5 +213,6 @@ Dataset usage follows the license of the Mendeley source dataset. Trained model 
 
 ## Acknowledgments
 - Mendeley Data — Jun Chen Tan & Lee-Yeng Ong for the bilingual hate speech dataset
+- Custom Code-Mixed Dataset — manually collected and labelled by our team from Reddit Malaysia, TikTok, and Facebook
 - HuggingFace — for the XLM-RoBERTa model and Transformers library
 - Captum — for the Integrated Gradients attribution implementation
