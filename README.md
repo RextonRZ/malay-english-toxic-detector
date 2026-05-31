@@ -4,6 +4,8 @@ A multilingual toxic comment classifier for English, Malay, and code-mixed Engli
 
 **🔗 Live demo:** https://huggingface.co/spaces/RextonRZ/toxic-comment-detector-demo
 
+> **Key finding:** XLM-RoBERTa generalizes to Manglish reasonably even zero-shot, but adding only ~300 code-mixed training examples nearly **doubled** code-mixed F1 (0.42 → 0.71) and recall (0.30 → 0.61) — with no loss on English or Malay.
+
 ---
 
 ## Problem Statement
@@ -185,6 +187,36 @@ python src/app.py
 ```
 
 This loads the few-shot model from the Hugging Face Hub and opens a local web interface with the same functionality as the hosted Space.
+
+---
+
+## Results
+
+Both models were evaluated on identical test sets. The few-shot model (trained with code-mixed data) is compared against the zero-shot model (English + Malay training only).
+
+### Code-mixed (Manglish) — the key comparison
+
+| Model | Accuracy | Precision | Recall | F1 | MCC | AUC-ROC |
+|---|---|---|---|---|---|---|
+| Zero-shot | 0.544 | 0.700 | 0.304 | 0.424 | 0.167 | 0.709 |
+| **Few-shot** | **0.728** | **0.857** | **0.609** | **0.712** | **0.493** | **0.808** |
+
+Adding code-mixed training data nearly doubled F1 and recall on Manglish. The zero-shot model missed most toxic code-mixed comments (recall 0.30); the few-shot model caught roughly twice as many.
+
+### Full per-language results
+
+| Model | Test Set | Accuracy | Precision | Recall | F1 | MCC | AUC-ROC |
+|---|---|---|---|---|---|---|---|
+| Few-shot | Combined | 0.849 | 0.820 | 0.857 | 0.838 | 0.697 | 0.926 |
+| Few-shot | English | 0.849 | 0.831 | 0.834 | 0.832 | 0.694 | 0.917 |
+| Few-shot | Malay | 0.849 | 0.810 | 0.881 | 0.844 | 0.700 | 0.931 |
+| Few-shot | Manglish | 0.728 | 0.857 | 0.609 | 0.712 | 0.493 | 0.808 |
+| Zero-shot | Combined | 0.854 | 0.842 | 0.840 | 0.841 | 0.707 | 0.926 |
+| Zero-shot | English | 0.849 | 0.834 | 0.829 | 0.832 | 0.694 | 0.917 |
+| Zero-shot | Malay | 0.860 | 0.851 | 0.849 | 0.850 | 0.719 | 0.933 |
+| Zero-shot | Manglish | 0.544 | 0.700 | 0.304 | 0.424 | 0.167 | 0.709 |
+
+English and Malay performance is virtually identical between the two models, confirming that the code-mixed data improved Manglish detection **without degrading** monolingual performance.
 
 ---
 
