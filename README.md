@@ -7,7 +7,7 @@
 [![Live Demo](https://img.shields.io/badge/%F0%9F%A4%97%20Live%20Demo-Hugging%20Face%20Spaces-yellow)](https://huggingface.co/spaces/RextonRZ/toxic-comment-detector-demo)
 
 
-A multilingual toxic comment classifier for English, Malay, and code-mixed English & Malay (Manglish) text using XLM-RoBERTa. The model is fine-tuned on monolingual English and Malay data, and the project compares a **zero-shot** configuration (monolingual training only) against a **few-shot** configuration (a small amount of code-mixed data folded into training) to measure the effect of code-mixed fine-tuning on Manglish detection.
+A multilingual toxic comment classifier for English, Malay, and code-mixed English & Malay (Manglish) text using XLM-RoBERTa. The model is fine-tuned on monolingual English and Malay data, and this project compares a **zero-shot** configuration (monolingual training only) against a **few-shot** configuration (a small amount of code-mixed data folded into training) to measure the effect of code-mixed fine-tuning on Manglish detection.
 
 **🔗 Live demo:** https://huggingface.co/spaces/RextonRZ/toxic-comment-detector-demo
 
